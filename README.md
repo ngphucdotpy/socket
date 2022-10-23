@@ -1,7 +1,7 @@
 # Socket
 A socket seminar using Python
 
-1. Connect:                                            Done
+1. Connection:                                         Done
 2. Connection handing:                                 Done
 3. Download file with "Content-Lenth:":                Done
 4. Download file with "Transfer-Encoding: chunked":    Working
