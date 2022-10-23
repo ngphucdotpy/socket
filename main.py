@@ -37,6 +37,6 @@ func.saveFile(data, filename, fileext)
 #         size = int(line.split()[1])
 #         break
 # print(size)
-print(data)
+# print(data)
 
 s.close()
