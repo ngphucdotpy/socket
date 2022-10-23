@@ -21,13 +21,7 @@ request = "GET /{} HTTP/1.1\r\n{}{}\r\n".format(path, host, connection)
 s.send(request.encode())
 print("Request is sent")
 
-respond = b""
-while True:
-    chunk = s.recv(4096)
-    if not chunk:
-        break
-    respond += chunk
-
+respond = func.getRespond(s, fileext)
 data = func.removeHeader(respond, fileext)
 func.saveFile(data, filename, fileext)
 

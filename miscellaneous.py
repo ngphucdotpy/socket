@@ -4,8 +4,9 @@ def extractInfo(URL:str):
 	domain = tmppath[0]
 	path = "/".join(tmppath[1:])
 	if (path != ""):
-		filename = tmppath[-1]
+		filename = domain + "_" + tmppath[-1]
 	else:
-		path = filename = "index.html"
-	fileext = filename.split(".")[1]
+		path = "index.html"
+		filename = domain + "_index.html"
+	fileext = filename.split(".")[-1]
 	return domain, path, filename, fileext
