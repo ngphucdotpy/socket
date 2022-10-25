@@ -11,13 +11,13 @@ def getRespond(s:socket, fileext:str) -> str:
                 break
             respond += chunk
     return respond
-def removeHeader(respond:str, fileext:str) -> str:
-    if fileext == "html":
-        encodeMethod = "UTF-8"
-    else:
-        encodeMethod = "latin1"
-    data = "".join(respond.decode(encodeMethod).split("\r\n\r\n")[1:]).encode(encodeMethod)
-    return data
+def removeHeader(respond:str, fileext:str):
+    data = b"".join(respond.split(b'\r\n\r\n')[1:])
+    if respond.split(b"\r\n\r\n")[0].find(b"Content-Length:") != -1:
+        size = int(respond.split(b"\r\n\r\n")[0].split(b"Content-Length:")[1])
+    if respond.split(b"\r\n\r\n")[0].find(b"Transfer-Encoding: chunked") != -1: 
+        size = "chunked"
+    return data, size
 def saveFile(data:str, filename:str) -> None:
     f = open(filename, "wb")
     f.write(data)
