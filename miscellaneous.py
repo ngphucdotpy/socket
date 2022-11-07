@@ -9,4 +9,7 @@ def extractInfo(URL:str):
 		path = "index.html"
 		filename = domain + "_index.html"
 	fileext = filename.split(".")[-1]
+	# fileext = tmppath[-1].split(".")[-1]
 	return domain, path, filename, fileext
+
+# print(extractInfo("http://www.bing.com/"))
