@@ -12,4 +12,4 @@ def extractInfo(URL:str):
 	# fileext = tmppath[-1].split(".")[-1]
 	return domain, path, filename, fileext
 
-# print(extractInfo("http://www.bing.com/"))
+# print(extractInfo("http://www.google.com/"))
