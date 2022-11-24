@@ -5,11 +5,11 @@ import miscellaneous as misc
 import function as func
 
 
-URL = "http://example.com/index.html"
+# URL = "http://www.httpwatch.com/httpgallery/chunked/chunkedimage.aspx"
 
 # URL = "http://web.stanford.edu/class/cs224w/slides/02-tradition-ml.pdf"
 
-# URL = "http://anglesharp.azurewebsites.net/Chunked"
+URL = "http://www.google.com/index.html"
 
 port = 80
 domain, path, filename, fileext = misc.extractInfo(URL)
@@ -29,16 +29,15 @@ print("Request is sent")
 
 respond = func.getRespond(s, fileext)
 data, size, type = func.removeHeader(respond, fileext)
-print(respond)
 
 if type == "chunked":
     while size != 0:
         respond = func.getRespond(s, fileext)
         data += b"".join(respond.split(b'\r\n')[1:])
-        # print(data)
-        # size = int(respond.split(b'\r\n')[-3], 16) #html
-        size = int(respond.split(b'\r\n')[0], 16) #aspx
-        # print(respond.split(b'\r\n')[0])
+        print(data)
+        size = int(respond.split(b'\r\n')[-3], 16) #html
+        # size = int(respond.split(b'\r\n')[0], 16) #aspx
+        print(respond.split(b'\r\n')[0])
 
 # print("\n\n")
 # print(respond)

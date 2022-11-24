@@ -13,7 +13,7 @@ class SocketProject:
         self.path = "/".join(self.path)
 
         self.socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-        self.socket.settimeout(3.0)
+        self.socket.settimeout(5.0)
 
         # main
         self.__connect()
@@ -46,9 +46,9 @@ class SocketProject:
         return -1
 
     def __getChunkLength(self, data):
-        raw = list(filter(bytes, data.split(b"\r\n")))
+        raw = data.split(b"\r\n")
         if len(raw) >= 2:
-            return raw[1], int(raw[0], 16)
+            return b"\r\n".join(raw[1:]), int(raw[0], 16)
         if len(raw) == 0:
             return b'', 0
         return raw[0], 0
@@ -69,28 +69,28 @@ class SocketProject:
             print("Error: {} or server disconnected. Terminated.".format(er))
             self.socket.close()
         f.close()
-        self.socket.close()
 
     def __receiveChunk(self, respond):
         f = open(self.fileName, "wb")
         data, size = self.__getChunkLength(self.__removeHeader(respond))
-        # f.write(data)
         try:
             while True:
-                if data == b"" or size == 0:
+                if data == b"0" or size == 0:
                     break
                 f.write(data)
                 remainChunkSize = size - len(data)
                 while remainChunkSize > 0:
-                    if remainChunkSize <= 32:
-                        data = self.socket.recv(remainChunkSize)
+                    if remainChunkSize < 32:
+                        data = self.socket.recv(remainChunkSize + 2)
                     else:
                         data = self.socket.recv(32)
                     remainChunkSize -= 32
                     f.write(data)
-                data, size = self.__getChunkLength((self.socket.recv(32)))   
+                data, size = self.__getChunkLength((self.socket.recv(32)))
         except socket.error as er:
             print("Error: {} or server disconnected. Terminated.".format(er))
+            self.socket.close()
+        f.close()
 
     def __receive(self):
         respond = self.socket.recv(1024)
@@ -100,7 +100,10 @@ class SocketProject:
         else:
             self.__receiveChunk(respond)
 
-SocketProject("http://web.stanford.edu/class/cs224w/slides/02-tradition-ml.pdf")
+SocketProject("http://www.httpwatch.com/httpgallery/chunked/chunkedimage.aspx")
+# SocketProject("http://www.google.com")
+# SocketProject("http://web.stanford.edu/class/cs224w/slides/")
+
 # print(a.URL)
 # print(a.domain)
 # print(a.path)

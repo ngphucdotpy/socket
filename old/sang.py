@@ -1,3 +1,4 @@
+
 import socket
 from bs4 import BeautifulSoup
 import os
@@ -17,10 +18,10 @@ class constant:
         url = url.split("http://")[1]
         if (url[len(url)-1]!='/' and len(url.split("/"))==1): url = url + '/'
         path = url.split("/")
-        if (len(path)>2): self.folder = 1
-        else: self.folder = 0
         self.link = path[0]
         self.fileName = path[len(path)-1]
+        if (len(path)>2 and self.fileName==""): self.folder = 1
+        else: self.folder = 0
             
         if (self.fileName=="" or self.fileName.find('.')==-1) : 
             self.fileName = "index.html"
@@ -111,7 +112,6 @@ def _sendRequestWithContentLength(client, fileName, dataLen, data):
             data = client.recv(Length)
     except socket.error as e:
         print(f"Socket error: {e}")
-    
     f.close()
 
 
@@ -134,7 +134,6 @@ def _sendRequest(client, const):
     ContentLength = 0
     D = ""
     chunkSize = 0
-    
     if ".html" in const.fileName:
         x = data.decode("latin-1").find("\r\n\r\n")
         responde = data.decode("latin-1")[:x]
@@ -160,7 +159,7 @@ def _sendRequest(client, const):
     
 
     
-def _downloadAllFiles(url, fileName, folderName):
+def _downloadAllFiles(client, url, fileName, folderName):
     # Get file name
     f = open(fileName)
     soup = BeautifulSoup(f, 'html.parser')
@@ -182,9 +181,10 @@ def _downloadAllFiles(url, fileName, folderName):
         c = constant(url + link)
         c.fileName = fileName
         consts.append(c)
-    
+
     for const in consts:
-        _sendRequest(const)
+        #print(const.fileName)
+        _sendRequest(client, const)
     
     
 def thread_function(url):
@@ -194,7 +194,7 @@ def thread_function(url):
     _sendRequest(client, const)
 
     if (const.folder==1):
-        _downloadAllFiles(url, const.fileName, const.folderName)
+        _downloadAllFiles(client, url, const.fileName, const.folderName)
     client.close()
 
 
@@ -204,4 +204,8 @@ def _main():
         executor.map(thread_function, URLS)
 
 
+
 _main()
+
+
+

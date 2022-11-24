@@ -3,7 +3,7 @@ import socket
 
 def getRespond(s:socket, fileext:str) -> str:
     if fileext == "html" or fileext == "aspx":
-        respond = s.recv(256*1024)
+        respond = s.recv(512*1024)
     else:
         respond = b""
         while True:
